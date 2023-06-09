@@ -1,12 +1,7 @@
-# 一个 ts 项目模板
+# mc 玩家管理系统
 
-# 功能
-
-- 保存代码自动格式化
-- 提交前 commit 校验
-- pretter 校验
-
-todo: eslint 校验
+[前端仓库](https://github.com/mc-player-admin/web)  
+正在开发中
 
 # 提交规范
 
