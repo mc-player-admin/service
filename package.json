@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "mc玩家管理系统-后端",
   "main": "src/app.ts",
-  "repository": "https://github.com/litfBlog/ts-template",
+  "repository": "https://github.com/mc-player-admin/service",
   "author": "ltfei <ltfei@ltfei.cn> & alongw<alongw@alongw.cn>",
   "license": "MIT",
   "scripts": {
