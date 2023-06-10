@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import expressJWT from 'express-jwt'
-// import { logger } from './utils/log'
+import { logger } from './utils/log'
 import cors from 'cors'
 
 const app = express()
@@ -16,9 +16,9 @@ app.use('*', (req: any, res, next) => {
     console.log(e)
   }
   next()
-  // logger.info(
-  //   `ip:${req.userIp}  请求:${req.path}  user-agent:${req.headers['user-agent']}`
-  // )
+  logger.info(
+    `ip:${req.userIp}  请求:${req.path}  user-agent:${req.headers['user-agent']}`
+  )
 })
 
 app.use(bodyParser.json())
