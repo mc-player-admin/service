@@ -1,6 +1,7 @@
 import app from './utils/express'
 import router from './router/'
 import { getConfig } from './utils/config'
+import { useSqlVersion } from './utils/sqlVersion'
 
 const main = async () => {
   const baseUrl = await getConfig('app', 'base_url')
@@ -19,3 +20,4 @@ const main = async () => {
   })
 }
 main()
+useSqlVersion()

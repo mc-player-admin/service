@@ -1,6 +1,7 @@
 export interface Config {
   readonly system: {
     version: string
+    sql_version: string
   }
   readonly app: {
     port: number
