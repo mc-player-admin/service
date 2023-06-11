@@ -35,12 +35,12 @@ export default [
       (
           id                       int auto_increment,
           username                 varchar(50)  not null,
-          password                 int          not null,
+          password varchar(100) not null,
           qq                       int          not null,
           primary_email            varchar(50)  not null,
           status                   int          not null,
           register_date            datetime     not null,
-          last_login_date          datetime     not null,
+          last_login_date          datetime     null,
           register_ip              varchar(50)  not null,
           register_user_agent      varchar(255) null,
           primary_premission_group int          null,
@@ -58,6 +58,25 @@ export default [
         value text not null,
         last_edit_date datetime null
       );`
+    ],
+    update: [
+      `create table users
+      (
+        id int auto_increment
+          primary key,
+        username varchar(50) not null,
+        password varchar(100) not null,
+        qq int not null,
+        primary_email varchar(50) not null,
+        status int not null,
+        register_date datetime not null,
+        last_login_date datetime null,
+        register_ip varchar(50) not null,
+        register_user_agent varchar(255) null,
+        primary_premission_group int null
+      );
+      
+      `
     ]
   }
 ] as {
