@@ -1,6 +1,7 @@
 export default [
   {
     version: '0.0.0',
+    sqlVersion: 1,
     init: [
       `
     create table config
@@ -25,5 +26,43 @@ export default [
     );
     `
     ]
+  },
+  {
+    version: '0.1.0',
+    sqlVersion: 2,
+    init: [
+      `create table users
+      (
+          id                       int auto_increment,
+          username                 varchar(50)  not null,
+          password                 int          not null,
+          qq                       int          not null,
+          primary_email            varchar(50)  not null,
+          status                   int          not null,
+          register_date            datetime     not null,
+          last_login_date          datetime     not null,
+          register_ip              varchar(50)  not null,
+          register_user_agent      varchar(255) null,
+          primary_premission_group int          null,
+          constraint users_pk
+              primary key (id)
+      );
+      
+      `,
+      `
+      create table config
+      (
+        id int auto_increment
+          primary key,
+        name varchar(100) not null,
+        value text not null,
+        last_edit_date datetime null
+      );`
+    ]
   }
-]
+] as {
+  version: string
+  sqlVersion: number
+  init: string[]
+  update: string[]
+}[]
