@@ -9,6 +9,7 @@ export default {
   rules: {
     'type-case': [0],
     'type-empty': [2, 'never'],
+
     'type-enum': [
       2,
       'always',
@@ -27,6 +28,7 @@ export default {
       ]
     ],
     'scope-empty': [0],
+    'scope-case': [0],
     'subject-empty': [2, 'never']
   },
   prompt: {
