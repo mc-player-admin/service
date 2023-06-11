@@ -67,11 +67,11 @@ export const useSqlVersion = async () => {
     let errCount = 0
     // 遍历此后的语句
     for (let i = index; i < sqls.length; i++) {
-      logger.info(`正在执行第${Number(i) + 1}/${sqls.length - index}组`)
+      logger.info(`正在执行第${Number(i) - index + 1}/${sqls.length - index}组`)
       const sql = sqls[i].update
       for (let j = 0; j < sql.length; j++) {
         logger.info(
-          `正在执行第${Number(i) + 1}/${sqls.length - index}组中的第${j + 1}/${
+          `正在执行第${Number(i) - index + 1}/${sqls.length - index}组中的第${j + 1}/${
             sql.length
           }`
         )
@@ -81,5 +81,9 @@ export const useSqlVersion = async () => {
         }
       }
     }
+    await query`
+    update config set value=${sqls.at(-1).sqlVersion} where name=${CONFIG_NAME}
+    `
+    logger.info(`更新完成，失败${errCount}条`)
   }
 }
