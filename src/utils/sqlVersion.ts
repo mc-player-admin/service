@@ -6,8 +6,7 @@
  * 如果系统从1.2.3版本更新到2.0.0版本 需要变动sql，则依次执行中间各个版本的升级sql
  */
 
-import { getConfig } from './config'
-import { getPackage } from './package'
+import { setConfig } from './config'
 import sqls from '../data/sql'
 import { logger } from './log'
 import { dbQuery, query } from './db'
@@ -49,12 +48,8 @@ export const useSqlVersion = async () => {
       }
     }
     // todo: 吧更新配置这个东西封装到config里面
-    await query`
-      insert into config set ${{
-        name: CONFIG_NAME,
-        value: sqls.at(-1).sqlVersion
-      }};
-    `
+    await setConfig('system', 'sql_version', sqls.at(-1).sqlVersion.toString())
+    // 设置外层数据库版本，避免影响后续判断
     sqlVersion = sqls.at(-1).sqlVersion
     logger.info(`初始化完成，失败${errCount}条`)
   }
@@ -81,9 +76,7 @@ export const useSqlVersion = async () => {
         }
       }
     }
-    await query`
-    update config set value=${sqls.at(-1).sqlVersion} where name=${CONFIG_NAME}
-    `
+    await setConfig('system', 'sql_version', sqls.at(-1).sqlVersion.toString())
     logger.info(`更新完成，失败${errCount}条`)
   }
 }

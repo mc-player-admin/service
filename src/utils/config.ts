@@ -35,3 +35,43 @@ export const getLocalConfig = <T extends keyof Config, K extends keyof Config[T]
 ) => {
   return localConfig[type][key]
 }
+
+export const setConfig = async <T extends keyof Config, K extends keyof Config[T]>(
+  type: T,
+  key: K,
+  value: Config[T][K]
+) => {
+  const configName = `${type}.${String(key)}`
+
+  const [err, result] = await query`
+      select * from config where name=${configName};
+    `
+  if (err) {
+    return false
+  }
+  // 没有此项配置 需要新增
+  if (result.length < 1) {
+    const [err] = await query`
+      insert into config set ${{
+        name: configName,
+        value: JSON.stringify(value),
+        last_edit_date: Date.now()
+      }}
+      `
+    if (err) {
+      return false
+    }
+  } else {
+    // 有此项配置 修改
+    const [err] = await query`
+      update config set ${{
+        value: JSON.stringify(value),
+        last_edit_date: Date.now()
+      }} where name=${configName};
+      `
+    if (err) {
+      return false
+    }
+  }
+  return true
+}
