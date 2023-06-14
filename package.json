@@ -21,6 +21,7 @@
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-angular": "^17.6.5",
     "@commitlint/cz-commitlint": "^17.5.0",
+    "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.13",
     "@types/express-jwt": "6.0.4",
     "@types/jsonwebtoken": "8.5.8",
@@ -44,6 +45,7 @@
     }
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-jwt": "5.3.3",
