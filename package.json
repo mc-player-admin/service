@@ -6,12 +6,15 @@
   "repository": "https://github.com/mc-player-admin/service",
   "author": "ltfei <ltfei@ltfei.cn> & alongw<alongw@alongw.cn>",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "prepare": "husky install",
     "cz": "git-cz",
     "format": "prettier --write --cache .",
-    "start": "ts-node src/app.ts",
-    "dev": "nodemon src/app.ts",
+    "start": "yarn start:ts",
+    "start:ts": "ts-node-esm --experimental-specifier-resolution=node src/app.ts",
+    "start:node": "node --es-module-specifier-resolution=node dist/app.js",
+    "dev": "nodemon -x node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm src/app.ts",
     "build": "tsc"
   },
   "devDependencies": {
