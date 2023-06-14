@@ -13,6 +13,15 @@ const defaultConfig: Config = {
       user: 'root',
       password: 'admin123',
       database: 'mc-player-admin'
+    },
+    mail: {
+      host: 'localhost',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'admin',
+        pass: '123456'
+      }
     }
   },
   system: {

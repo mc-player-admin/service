@@ -13,5 +13,14 @@ export interface Config {
       database: string
       port: number
     }
+    mail: {
+      host: string
+      port: number
+      secure: boolean
+      auth: {
+        user: string
+        pass: string
+      }
+    }
   }
 }
