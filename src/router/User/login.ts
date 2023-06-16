@@ -1,10 +1,12 @@
 import { Router } from 'express'
 import { check } from '../../utils/bcrypt'
 import { query } from '../../utils/db'
+import axios from 'axios'
+import { getConfig } from '../../utils/config'
+import { getAccessToken, getOpenId, getUserInfo } from '../../utils/qqConnectLogin'
+import { OkPacket } from 'mysql2'
 
 const router = Router()
-
-console.log(check('123', '456'))
 
 /**
  * 使用密码登录
@@ -40,8 +42,73 @@ router.post('/password', async (req, res) => {
 // router.post('/mail', () => {
 
 // })
-// router.post('/qq', () => {
 
-// })
+/**
+ * qq互联登录
+ */
+const { appid, appkey } = await getConfig('app', 'qq_connect')
+router.post('/qq', async (req, res) => {
+  const { code, state } = req.body
+  const { access_token } = await getAccessToken(appid, appkey, code)
+  const { openid } = await getOpenId(access_token)
+  const userInfo = await getUserInfo(access_token, appid, openid)
+
+  if (!openid || userInfo.ret != 0) {
+    return res.send({
+      status: 403
+    })
+  }
+
+  {
+    const [err, result] = await query`
+  select * from users where qq=${openid};
+  `
+    if (err) {
+      return res.send({
+        status: 500,
+        msg: '登录失败'
+      })
+    }
+    // 已存在 登录
+    if (result.length == 1) {
+      // todo token
+      return res.send({
+        status: 200,
+        data: {
+          type: 'login',
+          token: ''
+        }
+      })
+    }
+  }
+  // 新用户 注册
+  {
+    const [err, result] = await query<OkPacket>`insert into users set ${{
+      username: userInfo.nickname,
+      openid: openid,
+      status: 1,
+      register_date: new Date(),
+      // todo: 中间件获取/格式化ip
+      register_ip: '127.0.0.1',
+      register_user_agent: req.headers['user-agent'],
+      // todo: 权限组
+      primary_premission_group: 0
+    }}`
+    if (err) {
+      return res.send({
+        status: 500,
+        msg: '注册失败'
+      })
+    }
+    // todo token
+    return res.send({
+      status: 200,
+      data: {
+        type: 'register',
+        token: ''
+      }
+    })
+  }
+})
 
 export default router

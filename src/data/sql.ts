@@ -78,6 +78,22 @@ export default [
       
       `
     ]
+  },
+  {
+    version: '0.1.0',
+    sqlVersion: 3,
+    init: [],
+    update: [
+      `alter table users
+    add openid varchar(100) null;`,
+      ` alter table users
+    modify password varchar(100) null;`,
+      `alter table users
+    modify qq int null;`,
+
+      `alter table users
+    modify primary_email varchar(50) null;`
+    ]
   }
 ] as {
   version: string

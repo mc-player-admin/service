@@ -22,5 +22,9 @@ export interface Config {
         pass: string
       }
     }
+    qq_connect?: {
+      appid: string
+      appkey: string
+    }
   }
 }
