@@ -1,6 +1,10 @@
-import type { Request as ExpressRequest } from 'express'
+import { Request as ExpressRequest, Express } from 'express'
+
+export interface User extends Express.User {
+  id: number
+}
 
 export interface Request extends ExpressRequest {
   userIp: string
-  user: {}
+  user: User
 }
