@@ -110,7 +110,7 @@ router.post('/qq', async (req: Request, res) => {
 
   {
     const [err, result] = await query`
-    select * from users where qq=${openid};
+    select * from users where openid=${openid};
     `
     if (err) {
       return res.send({
@@ -119,7 +119,10 @@ router.post('/qq', async (req: Request, res) => {
       })
     }
     // 已存在 登录
-    if (result.length == 1) {
+    if (result.length >= 1) {
+      query`
+      update users set last_login_date=${new Date()} where id=${result[0].id}
+      `
       return res.send({
         status: 200,
         data: {
