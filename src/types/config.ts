@@ -25,6 +25,7 @@ export interface Config {
     qq_connect?: {
       appid: string
       appkey: string
+      redirect_uri: string
     }
   }
 }
