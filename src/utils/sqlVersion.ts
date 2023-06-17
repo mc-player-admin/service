@@ -32,8 +32,10 @@ export const useSqlVersion = async () => {
   let sqlVersion = -1
   if (table) {
     const [err, result] = await query`select value from config where name=${CONFIG_NAME}`
-    sqlVersion = Number(result[0].value)
+    sqlVersion = Number(JSON.parse(result[0].value))
   }
+
+  logger.info('数据库版本：' + sqlVersion)
 
   // 没有初始化(表不存在)
   if (!table) {
