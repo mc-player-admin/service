@@ -7,6 +7,7 @@ const defaultConfig: Config = {
   app: {
     base_url: '/',
     port: 3000,
+    jwt_secret_key: '123456',
     mysql: {
       host: 'localhost',
       port: 3306,

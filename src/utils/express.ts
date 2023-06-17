@@ -3,15 +3,20 @@ import bodyParser from 'body-parser'
 import expressJWT from 'express-jwt'
 import { logger } from './log'
 import cors from 'cors'
+import { getConfig } from './config'
+import { Request } from '../types/express'
 
+const jwtSecretKey = await getConfig('app', 'jwt_secret_key')
+const baseUrl = await getConfig('app', 'base_url')
+const unless = ['/user/login/']
 const app = express()
 app.use(cors())
 
 // 中间件记录日志
-app.use('*', (req: any, res, next) => {
+app.use('*', (req: Request, res, next) => {
   // 用于记录特定时间的日志输出
   try {
-    req.userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    req.userIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress
   } catch (e) {
     console.log(e)
   }
@@ -24,11 +29,13 @@ app.use('*', (req: any, res, next) => {
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 // 使用 .unless({ path: [/^\/api\//] }) 指定哪些接口不需要进行 Token 的身份认证
-// app.use(
-//   expressJWT({ secret: config.jwtSecretKey, algorithms: ['HS256'] }).unless({
-//     path: JWTUnless
-//   })
-// )
+app.use(
+  expressJWT({ secret: jwtSecretKey, algorithms: ['HS256'] }).unless({
+    path: unless.map((e) => {
+      return new RegExp(`^${baseUrl == '/' ? '' : baseUrl}${e}`)
+    })
+  })
+)
 
 // 错误中间件
 app.use(

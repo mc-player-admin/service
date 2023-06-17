@@ -1,10 +1,11 @@
 import { Router } from 'express'
 import { query } from '../../utils/db'
 import type { OkPacket } from 'mysql2'
+import { Request } from '../../types/express'
 
 const router = Router()
 
-router.post('/new', async (req, res) => {
+router.post('/new', async (req: Request, res) => {
   const { qq, username, code, password } = req.body
   // todo 验证码验证逻辑(通过qq号@qq.com验证qq)
   // qq
@@ -36,8 +37,7 @@ router.post('/new', async (req, res) => {
     primary_email: `${qq}@qq.com`,
     status: 1,
     register_date: new Date(),
-    // todo: 中间件获取/格式化ip
-    register_ip: '127.0.0.1',
+    register_ip: req.userIp,
     register_user_agent: req.headers['user-agent'],
     // todo: 权限组
     primary_premission_group: 0

@@ -6,13 +6,15 @@ import { getConfig } from '../../utils/config'
 import { getAccessToken, getOpenId, getUserInfo } from '../../utils/qqConnectLogin'
 import { OkPacket } from 'mysql2'
 import { randomUUID } from 'crypto'
+import token from '../../utils/token'
+import type { Request } from '../../types/express'
 
 const router = Router()
 
 /**
  * 使用密码登录
  */
-router.post('/password', async (req, res) => {
+router.post('/password', async (req: Request, res) => {
   /**
    * user: 可以是 qq
    */
@@ -33,10 +35,13 @@ router.post('/password', async (req, res) => {
   if (!check(password, result[0].password)) {
     return res.send({ status: 403, msg: '账号或密码错误' })
   }
+
   res.send({
     status: 200,
     data: {
-      // todo: token
+      token: token({
+        id: result[0].id
+      })
     }
   })
 })
@@ -48,15 +53,14 @@ router.post('/password', async (req, res) => {
  * qq互联登录
  */
 const { appid, appkey, redirect_uri } = await getConfig('app', 'qq_connect')
-router.post('/qq/init', async (req, res) => {
+router.post('/qq/init', async (req: Request, res) => {
   const uuid = randomUUID()
   const [err, result] = await query<OkPacket>`
   insert into login_queue set ${{
     uuid,
     date: new Date(),
     status: 0,
-    // todo: ip
-    ip: '127.0.0.1',
+    ip: req.ip,
     user_agent: req.headers['user-agent']
   }};
   `
@@ -75,7 +79,7 @@ router.post('/qq/init', async (req, res) => {
   })
 })
 
-router.post('/qq', async (req, res) => {
+router.post('/qq', async (req: Request, res) => {
   const { code, state } = req.body
   // 验证 state(uuid)
   {
@@ -116,12 +120,13 @@ router.post('/qq', async (req, res) => {
     }
     // 已存在 登录
     if (result.length == 1) {
-      // todo token
       return res.send({
         status: 200,
         data: {
           type: 'login',
-          token: ''
+          token: token({
+            id: result[0].id
+          })
         }
       })
     }
@@ -133,8 +138,7 @@ router.post('/qq', async (req, res) => {
       openid: openid,
       status: 1,
       register_date: new Date(),
-      // todo: 中间件获取/格式化ip
-      register_ip: '127.0.0.1',
+      register_ip: req.userIp,
       register_user_agent: req.headers['user-agent'],
       // todo: 权限组
       primary_premission_group: 0
@@ -145,12 +149,13 @@ router.post('/qq', async (req, res) => {
         msg: '注册失败'
       })
     }
-    // todo token
     return res.send({
       status: 200,
       data: {
         type: 'register',
-        token: ''
+        token: token({
+          id: result.insertId
+        })
       }
     })
   }

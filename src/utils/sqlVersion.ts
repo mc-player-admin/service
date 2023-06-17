@@ -47,7 +47,6 @@ export const useSqlVersion = async () => {
         errCount++
       }
     }
-    // todo: 吧更新配置这个东西封装到config里面
     await setConfig('system', 'sql_version', sqls.at(-1).sqlVersion.toString())
     // 设置外层数据库版本，避免影响后续判断
     sqlVersion = sqls.at(-1).sqlVersion

@@ -6,6 +6,7 @@ export interface Config {
   readonly app: {
     port: number
     base_url: string
+    jwt_secret_key: string
     mysql: {
       host: string
       user: string
