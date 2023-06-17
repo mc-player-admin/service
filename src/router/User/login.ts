@@ -87,12 +87,12 @@ router.post('/qq', async (req: Request, res) => {
     select * from login_queue where uuid=${state};
     `
     if (err) {
-      res.send({
+      return res.send({
         status: 500
       })
     }
     if (result.length != 1) {
-      res.send({
+      return res.send({
         status: 403
       })
     }
