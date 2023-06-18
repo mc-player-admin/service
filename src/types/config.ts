@@ -18,6 +18,7 @@ export interface Config {
       host: string
       port: number
       secure: boolean
+      from: string
       auth: {
         user: string
         pass: string
@@ -27,6 +28,13 @@ export interface Config {
       appid: string
       appkey: string
       redirect_uri: string
+    }
+    template: {
+      emial_code: {
+        from: string
+        template: string
+        subject: string
+      }
     }
   }
 }

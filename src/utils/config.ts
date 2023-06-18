@@ -19,9 +19,17 @@ const defaultConfig: Config = {
       host: 'localhost',
       port: 587,
       secure: false,
+      from: 'admin<admin@admin.admin>',
       auth: {
         user: 'admin',
         pass: '123456'
+      }
+    },
+    template: {
+      emial_code: {
+        from: 'admin<admin@admin.admin>',
+        subject: '验证码',
+        template: '<h1>{{code}}</h1>'
       }
     }
   },
