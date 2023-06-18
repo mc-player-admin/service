@@ -1,12 +1,13 @@
 import { Router } from 'express'
 import { query } from '../../utils/db'
-import type { OkPacket } from 'mysql2'
 import { Request } from '../../types/express'
+import { codes } from '../../data/codes'
 
 const router = Router()
 
 router.post('/new', async (req: Request, res) => {
-  const { qq, username, code, password } = req.body
+  const { qq, code } = req.body
+  const user = req.user
   // todo 验证码验证逻辑(通过qq号@qq.com验证qq)
   // qq
   if (!/^[1-9][0-9]{4,10}$/.test(qq)) {
@@ -14,6 +15,15 @@ router.post('/new', async (req: Request, res) => {
       status: 403,
       msg: 'qq格式不正确'
     })
+  }
+  // 验证码
+  const mail = `${qq}@qq.com`
+  if (
+    !codes.find((e) => {
+      return mail == e.mail && e.code == code && e.date + 1000 * 60 * 10 > Date.now()
+    })
+  ) {
+    return res.send({ status: 403 })
   }
   // 验证qq
   {
@@ -30,26 +40,15 @@ router.post('/new', async (req: Request, res) => {
       })
     }
   }
-  const [err, result] = await query<OkPacket>`insert into users set ${{
-    username,
-    password,
+  const [err] = await query`update users set ${{
     qq,
-    primary_email: `${qq}@qq.com`,
-    status: 1,
-    register_date: new Date(),
-    register_ip: req.userIp,
-    register_user_agent: req.headers['user-agent'],
-    // todo: 权限组
-    primary_premission_group: 0
-  }}`
+    primary_email: mail
+  }} where id=${user.id}`
   if (err) {
     return res.send({ status: 500 })
   }
   res.send({
-    status: 200,
-    data: {
-      id: result.insertId
-    }
+    status: 200
   })
 })
 
