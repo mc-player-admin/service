@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { query } from '../../utils/db'
 import { Request, User } from '../../types/express'
-import { codes } from '../../data/codes'
+import { checkCode } from '../../data/codes'
 import { queryOldPlayer } from '../../utils/queryOldPlayer'
 
 const router = Router()
@@ -23,12 +23,10 @@ const setUserinfo = async (qq: string, code: string, user: User) => {
   }
   // 验证码
   const mail = `${qq}@qq.com`
-  if (
-    !codes.find((e) => {
-      return mail == e.mail && e.code == code && e.date + 1000 * 60 * 10 > Date.now()
-    })
-  ) {
-    return { status: 403 }
+  if (!checkCode(mail, code)) {
+    return {
+      status: 403
+    }
   }
   // 验证qq
   {
