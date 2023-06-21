@@ -36,5 +36,11 @@ export interface Config {
         subject: string
       }
     }
+    cos?: {
+      SecretId: string
+      SecretKey: string
+      Bucket: string
+      Region: string
+    }
   }
 }
