@@ -2,7 +2,7 @@ import { Router } from 'express'
 import dayjs from 'dayjs'
 import multer from 'multer'
 import { putObject } from '../../utils/cos'
-import { Request } from '../../types/express'
+import type { Request } from '../../types/express'
 
 const router = Router()
 
