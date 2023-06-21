@@ -8,7 +8,7 @@ import { Request } from '../types/express'
 
 const jwtSecretKey = await getConfig('app', 'jwt_secret_key')
 const baseUrl = await getConfig('app', 'base_url')
-const unless = ['/user/login/']
+const unless = ['/user/login/', '/player/inquires/']
 const app = express()
 app.use(cors())
 
