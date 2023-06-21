@@ -64,10 +64,10 @@ router.post('/new', async (req: Request, res) => {
 router.post('/transfer/queryName', async (req: Request, res) => {
   const { qq, name } = req.body
   const player = await queryOldPlayer(qq, name, req.user.id)
-  if (!player || typeof player == 'string') {
+  if (player.usable == false) {
     return res.send({
       status: 403,
-      msg: player
+      msg: player.msg
     })
   }
   return res.send({
@@ -79,10 +79,10 @@ router.post('/transfer', async (req: Request, res) => {
   const { qq, name, code } = req.body
   const user = req.user
   const player = await queryOldPlayer(qq, name, req.user.id)
-  if (!player || typeof player == 'string') {
+  if (player.usable == false) {
     return res.send({
       status: 403,
-      msg: player
+      msg: player.msg
     })
   }
   // 完善用户信息
