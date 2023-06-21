@@ -4,7 +4,7 @@ import expressJWT from 'express-jwt'
 import { logger } from './log'
 import cors from 'cors'
 import { getConfig } from './config'
-import { Request } from '../types/express'
+import type { Request } from '../types/express'
 
 const jwtSecretKey = await getConfig('app', 'jwt_secret_key')
 const baseUrl = await getConfig('app', 'base_url')

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { queryOldPlayer } from '../../utils/queryOldPlayer'
-import { Request } from '../../types/express'
+import type { Request } from '../../types/express'
 
 const router = Router()
 
