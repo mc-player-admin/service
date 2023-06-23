@@ -4,12 +4,13 @@ import type { Request } from '../../types/express'
 import { query } from '../../utils/db'
 import dayjs from 'dayjs'
 import { OkPacket } from 'mysql2'
+import { getConfig } from '../../utils/config'
 
 const router = Router()
 
 router.post('/checkName', async (req: Request, res) => {
-  const { qq, name } = req.body
-  const player = await queryOldPlayer(qq, name, req.user.id)
+  const { name } = req.body
+  const player = await checkAudit(req.user.id, name)
   if (player.usable == false) {
     return res.send({
       status: 403,
@@ -104,6 +105,12 @@ const checkAudit = async (
       }
     }
   }
+  // 是否检测bili信息
+  if (!biliUsername) {
+    return {
+      usable: true
+    }
+  }
   // bili信息重复 (排除审核未通过的)
   {
     const [err, result] = await query`
@@ -123,11 +130,15 @@ const checkAudit = async (
       }
     }
   }
+  return {
+    usable: true
+  }
 }
 
 /**
  * 初始化 用于验证是否可提交和交换配置项
  */
+const { host } = await getConfig('app', 'cos')
 router.post('/init', async (req: Request, res) => {
   const user = req.user
   const check = await checkAudit(user.id)
@@ -138,7 +149,10 @@ router.post('/init', async (req: Request, res) => {
     })
   }
   res.send({
-    status: 200
+    status: 200,
+    data: {
+      host
+    }
   })
 })
 
@@ -180,13 +194,6 @@ router.post('/', async (req: Request, res) => {
     })
   }
 
-  const player = await queryOldPlayer(userinfo.qq, name, req.user.id)
-  if (player.usable == false) {
-    return res.send({
-      status: 403,
-      msg: player.msg
-    })
-  }
   const check = await checkAudit(user.id, name, biliUsername, biliUid)
   if (check.usable == false) {
     return res.send({

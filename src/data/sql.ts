@@ -298,7 +298,7 @@ create table users
     update: [
       `create table audits
       (
-          id            int          not null
+          id            varchar(20)          not null
               primary key,
           user          int          not null,
           name          varchar(50)  not null,
@@ -319,7 +319,7 @@ create table users
     init: [
       `create table audits
 (
-    id            int          not null
+    id            varchar(20)          not null
         primary key,
     user          int          not null,
     name          varchar(50)  not null,

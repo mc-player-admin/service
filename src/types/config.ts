@@ -41,6 +41,7 @@ export interface Config {
       SecretKey: string
       Bucket: string
       Region: string
+      host: string
     }
   }
 }
