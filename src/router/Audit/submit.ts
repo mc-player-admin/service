@@ -27,7 +27,26 @@ const checkAudit = async (
 ): Promise<{
   usable: boolean
   msg?: string
+  status?: number
 }> => {
+  // 是否完善信息
+  {
+    const [err, result] = await query`
+    select * from users where id=${user}
+    `
+    if (err) {
+      return {
+        usable: false
+      }
+    }
+    if (!result[0].qq || !result[0].primary_email) {
+      return {
+        usable: false,
+        msg: '请先完善信息',
+        status: 4031
+      }
+    }
+  }
   // 有正在审核的
   {
     const [err, result] = await query`
@@ -114,7 +133,7 @@ router.post('/init', async (req: Request, res) => {
   const check = await checkAudit(user.id)
   if (check.usable == false) {
     return res.send({
-      status: 403,
+      status: check.status || 403,
       msg: check.msg
     })
   }
