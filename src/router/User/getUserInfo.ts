@@ -1,12 +1,20 @@
 import { Router } from 'express'
 import { Request } from '../../types/express'
 import { query } from '../../utils/db'
+import { auth } from '../../utils/premission'
 
 const router = Router()
 
-router.post('/', async (req: Request, res) => {
-  const user = req.user
-  const [err, result] = await query`
+router.post(
+  '/',
+  auth({
+    user: {
+      query_status: true
+    }
+  }),
+  async (req: Request, res) => {
+    const user = req.user
+    const [err, result] = await query`
   select
     id,
     username,
@@ -19,20 +27,21 @@ router.post('/', async (req: Request, res) => {
   from users
   where id=${user.id}
   `
-  if (err) {
-    return res.send({
-      status: 500
+    if (err) {
+      return res.send({
+        status: 500
+      })
+    }
+    if (result.length != 1) {
+      return res.send({
+        status: 403
+      })
+    }
+    res.send({
+      status: 200,
+      data: result[0]
     })
   }
-  if (result.length != 1) {
-    return res.send({
-      status: 403
-    })
-  }
-  res.send({
-    status: 200,
-    data: result[0]
-  })
-})
+)
 
 export default router
