@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { Request } from '../../types/express'
 import { query } from '../../utils/db'
-import { auth } from '../../utils/premission'
+import { auth, checkUserPremission } from '../../utils/premission'
 
 const router = Router()
 
@@ -37,9 +37,36 @@ router.post(
         status: 403
       })
     }
+
+    /**
+     * 获取权限
+     */
+    const premissionList = [
+      'admin.audit',
+      'admin.edit_userinfo',
+      'admin.edit_player',
+      'admin.create_user',
+      'admin.create_player'
+    ]
+    const premissions = await Promise.all(
+      premissionList.map((e) => {
+        return checkUserPremission(user.id, e)
+      })
+    )
+
     res.send({
       status: 200,
-      data: result[0]
+      data: {
+        userinfo: result[0],
+        premission: premissions
+          .filter((e) => e)
+          .map((e, i) => {
+            return {
+              name: premissionList[i],
+              value: e
+            }
+          })
+      }
     })
   }
 )

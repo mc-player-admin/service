@@ -83,8 +83,9 @@ export const checkUserPremission = async (user: number, name: string) => {
     return false
   }
   // 数据库没有约定权限
+  const nameKey = name.split('.')
   // @ts-ignore
-  if (result[0].value == null && !defaultPremission[i][j]) {
+  if (result[0].value == null && !defaultPremission[nameKey[0]][nameKey[1]]) {
     logger.info(` [${user}] 鉴权  ${name} 匹配默认权限拒绝`)
     return false
   }
