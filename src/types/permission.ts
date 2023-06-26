@@ -1,4 +1,4 @@
-export interface Premission {
+export interface permission {
   visitor: {
     register: boolean | null
     login: boolean | null
@@ -16,5 +16,6 @@ export interface Premission {
     edit_player: boolean | null
     create_user: boolean | null
     create_player: boolean | null
+    edit_permission: boolean | null
   }
 }

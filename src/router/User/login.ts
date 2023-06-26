@@ -144,7 +144,7 @@ router.post('/qq', async (req: Request, res) => {
       register_ip: req.userIp,
       register_user_agent: req.headers['user-agent'],
       // todo: 权限组
-      primary_premission_group: 0
+      primary_permission_group: 0
     }}`
     if (err) {
       return res.send({

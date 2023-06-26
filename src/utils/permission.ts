@@ -1,4 +1,4 @@
-import type { Premission } from '../types/premission'
+import type { permission } from '../types/permission'
 import type { Request } from '../types/express'
 import type { RequestHandler } from 'express'
 import { logger } from './log'
@@ -17,7 +17,7 @@ type PartialSub<T> = {
  * 默认权限
  * 不区分是否登录 账号权限
  */
-const defaultPremission: Premission = {
+const defaultpermission: permission = {
   visitor: {
     register: true,
     login: true,
@@ -34,7 +34,8 @@ const defaultPremission: Premission = {
     edit_userinfo: false,
     edit_player: false,
     create_user: false,
-    create_player: false
+    create_player: false,
+    edit_permission: false
   }
 }
 
@@ -42,15 +43,15 @@ const defaultPremission: Premission = {
  * express中间件
  * 验证权限
  */
-export const auth = (premission: PartialSub<Premission>): RequestHandler => {
+export const auth = (permission: PartialSub<permission>): RequestHandler => {
   return async (req: Request, res, next) => {
     const user = req.user
     // 两层循环确认权限
-    for (let i in premission) {
-      for (let j in premission[i as keyof typeof premission]) {
+    for (let i in permission) {
+      for (let j in permission[i as keyof typeof permission]) {
         const name = `${i}.${j}`
-        const havePremission = await checkUserPremission(user.id, name)
-        if (!havePremission) {
+        const havepermission = await checkUserpermission(user.id, name)
+        if (!havepermission) {
           return res.send({
             status: 403,
             msg: '权限不足'
@@ -58,7 +59,7 @@ export const auth = (premission: PartialSub<Premission>): RequestHandler => {
         }
       }
     }
-    logger.info(`[${req.path}] [${req.user.id}] 鉴权 ${JSON.stringify(premission)} 通过`)
+    logger.info(`[${req.path}] [${req.user.id}] 鉴权 ${JSON.stringify(permission)} 通过`)
     next()
   }
 }
@@ -66,16 +67,16 @@ export const auth = (premission: PartialSub<Premission>): RequestHandler => {
 /**
  * 验证用户权限
  */
-export const checkUserPremission = async (user: number, name: string) => {
+export const checkUserpermission = async (user: number, name: string) => {
   const [err, result] = await query<
     {
       value: boolean | null | 0 | 1
     }[]
   >`
   select * from users
-  left join premission_group on 
-      primary_premission_group = premission_group.group and
-      premission_group.name=${name}
+  left join permission_group on 
+      primary_permission_group = permission_group.group and
+      permission_group.name=${name}
   where users.id=${user}
   `
   if (err || result[0].value == 0) {
@@ -85,7 +86,7 @@ export const checkUserPremission = async (user: number, name: string) => {
   // 数据库没有约定权限
   const nameKey = name.split('.')
   // @ts-ignore
-  if (result[0].value == null && !defaultPremission[nameKey[0]][nameKey[1]]) {
+  if (result[0].value == null && !defaultpermission[nameKey[0]][nameKey[1]]) {
     logger.info(` [${user}] 鉴权  ${name} 匹配默认权限拒绝`)
     return false
   }

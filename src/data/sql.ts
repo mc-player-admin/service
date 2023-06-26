@@ -43,7 +43,7 @@ export default [
           last_login_date          datetime     null,
           register_ip              varchar(50)  not null,
           register_user_agent      varchar(255) null,
-          primary_premission_group int          null,
+          primary_permission_group int          null,
           constraint users_pk
               primary key (id)
       );
@@ -73,7 +73,7 @@ export default [
         last_login_date datetime null,
         register_ip varchar(50) not null,
         register_user_agent varchar(255) null,
-        primary_premission_group int null
+        primary_permission_group int null
       );
       
       `
@@ -152,7 +152,7 @@ export default [
           last_login_date          datetime     null,
           register_ip              varchar(50)  not null,
           register_user_agent      varchar(255) null,
-          primary_premission_group int          null,
+          primary_permission_group int          null,
           openid                   varchar(100) null
       );
       `
@@ -287,7 +287,7 @@ create table users
     last_login_date          datetime     null,
     register_ip              varchar(50)  not null,
     register_user_agent      varchar(255) null,
-    primary_premission_group int          null,
+    primary_permission_group int          null,
     openid                   varchar(100) null
 );
 `
@@ -416,7 +416,7 @@ create table users
     last_login_date          datetime     null,
     register_ip              varchar(50)  not null,
     register_user_agent      varchar(255) null,
-    primary_premission_group int          null,
+    primary_permission_group int          null,
     openid                   varchar(100) null
 );`
     ]

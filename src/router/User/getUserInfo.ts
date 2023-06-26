@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { Request } from '../../types/express'
 import { query } from '../../utils/db'
-import { auth, checkUserPremission } from '../../utils/premission'
+import { auth, checkUserpermission } from '../../utils/permission'
 
 const router = Router()
 
@@ -23,7 +23,7 @@ router.post(
     status,
     register_date,
     last_login_date,
-    primary_premission_group
+    primary_permission_group
   from users
   where id=${user.id}
   `
@@ -41,16 +41,17 @@ router.post(
     /**
      * 获取权限
      */
-    const premissionList = [
+    const permissionList = [
       'admin.audit',
       'admin.edit_userinfo',
       'admin.edit_player',
       'admin.create_user',
-      'admin.create_player'
+      'admin.create_player',
+      'admin.edit_permission'
     ]
-    const premissions = await Promise.all(
-      premissionList.map((e) => {
-        return checkUserPremission(user.id, e)
+    const permissions = await Promise.all(
+      permissionList.map((e) => {
+        return checkUserpermission(user.id, e)
       })
     )
 
@@ -58,11 +59,11 @@ router.post(
       status: 200,
       data: {
         userinfo: result[0],
-        premission: premissions
+        permission: permissions
           .filter((e) => e)
           .map((e, i) => {
             return {
-              name: premissionList[i],
+              name: permissionList[i],
               value: e
             }
           })
