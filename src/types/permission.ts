@@ -1,4 +1,4 @@
-export interface permission {
+export interface Permission {
   visitor: {
     register: boolean | null
     login: boolean | null

@@ -4,14 +4,6 @@ import { auth } from '../../utils/permission'
 
 const router = Router()
 
-router.use(
-  '/audit',
-  auth({
-    admin: {
-      audit: true
-    }
-  }),
-  audit
-)
+router.use('/audit', auth('admin', 'audit'), audit)
 
 export default router
