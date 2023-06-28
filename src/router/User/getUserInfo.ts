@@ -53,13 +53,13 @@ router.post('/', auth('user', 'query_status'), async (req: Request, res) => {
     data: {
       userinfo: result[0],
       permission: permissions
-        .filter((e) => e)
         .map((e, i) => {
           return {
             name: permissionList[i],
             value: e
           }
         })
+        .filter((e) => e.value)
     }
   })
 })
