@@ -1,9 +1,8 @@
 import { Router } from 'express'
 import type { Request } from '../../types/express'
 import { query } from '../../utils/db'
-import execute from '../../mcsmApis/execute'
 import { getConfig } from '../../utils/config'
-import { logger } from '../../utils/log'
+import { whitelistAdd } from '../../mcsmApis/execute'
 
 const router = Router()
 
@@ -85,17 +84,8 @@ router.post('/set', async (req: Request, res) => {
 
   // 添加白名单
   if (approved) {
-    try {
-      const { data: res } = await execute(command_add.replace('{name}', audit.name))
-      if (res?.status != 200) {
-        logger.error(res)
-        return res.send({
-          status: 500,
-          msg: '白名单添加失败'
-        })
-      }
-    } catch (e) {
-      logger.error(e)
+    const add = await whitelistAdd(audit.name)
+    if (!add) {
       return res.send({
         status: 500,
         msg: '白名单添加失败'
