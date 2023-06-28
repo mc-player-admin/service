@@ -43,5 +43,13 @@ export interface Config {
       Region: string
       host: string
     }
+    mcsm?: {
+      url: string
+      uuid: string
+      remote_uuid: string
+      apiKey: string
+      command_add: string
+      command_remove: string
+    }
   }
 }

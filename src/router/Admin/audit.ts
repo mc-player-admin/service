@@ -1,6 +1,9 @@
 import { Router } from 'express'
 import type { Request } from '../../types/express'
 import { query } from '../../utils/db'
+import execute from '../../mcsmApis/execute'
+import { getConfig } from '../../utils/config'
+import { logger } from '../../utils/log'
 
 const router = Router()
 
@@ -39,6 +42,7 @@ router.post('/get', async (req, res) => {
   })
 })
 
+const { command_add } = await getConfig('app', 'mcsm')
 router.post('/set', async (req: Request, res) => {
   const user = req.user
   const { id, approved, cause } = req.body
@@ -79,6 +83,25 @@ router.post('/set', async (req: Request, res) => {
   }
   const audit = result[0]
 
+  // 添加白名单
+  if (approved) {
+    try {
+      const { data: res } = await execute(command_add.replace('{name}', audit.name))
+      if (res?.status != 200) {
+        logger.error(res)
+        return res.send({
+          status: 500,
+          msg: '白名单添加失败'
+        })
+      }
+    } catch (e) {
+      logger.error(e)
+      return res.send({
+        status: 500,
+        msg: '白名单添加失败'
+      })
+    }
+  }
   // 修改审核表
   {
     const [err] = await query`update audits set ${{
@@ -105,7 +128,6 @@ router.post('/set', async (req: Request, res) => {
       }}`
     }
   }
-  // todo: 添加白名单
   res.send({
     status: 200
   })
