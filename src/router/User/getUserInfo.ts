@@ -13,6 +13,7 @@ router.post('/', auth('user', 'query_status'), async (req: Request, res) => {
     username,
     qq,
     primary_email,
+    avatar,
     status,
     register_date,
     last_login_date,

@@ -121,7 +121,11 @@ router.post('/qq', async (req: Request, res) => {
     // 已存在 登录
     if (result.length >= 1) {
       query`
-      update users set last_login_date=${new Date()} where id=${result[0].id}
+      update users set ${{
+        last_login_date: new Date(),
+        username: userInfo.nickname,
+        avatar: userInfo.figureurl_qq_2 || userInfo.figureurl_qq_1
+      }} where id=${result[0].id}
       `
       return res.send({
         status: 200,
@@ -138,6 +142,7 @@ router.post('/qq', async (req: Request, res) => {
   {
     const [err, result] = await query<OkPacket>`insert into users set ${{
       username: userInfo.nickname,
+      avatar: userInfo.figureurl_qq_2 || userInfo.figureurl_qq_1,
       openid: openid,
       status: 1,
       register_date: new Date(),

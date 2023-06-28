@@ -104,14 +104,17 @@ export const queryOldPlayer = async (
         usable: false
       }
     }
-    if (result.length >= 1) {
+    if (result.length < 1) {
       return {
-        usable: true,
-        id: result[0].id,
-        name: result[0].name,
-        date: result[0].date,
-        qq: result[0].qq
+        usable: false
       }
+    }
+    return {
+      usable: true,
+      id: result[0].id,
+      name: result[0].name,
+      date: result[0].date,
+      qq: result[0].qq
     }
   }
 }

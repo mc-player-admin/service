@@ -62,6 +62,7 @@ router.post('/new', async (req: Request, res) => {
   res.send(await setUserinfo(qq, code, user))
 })
 
+// todo: 填写时验证qq和邮箱
 router.post('/transfer/queryName', async (req: Request, res) => {
   const { qq, name } = req.body
   const player = await queryOldPlayer(qq, name, req.user.id)
