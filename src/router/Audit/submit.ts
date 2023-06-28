@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { queryOldPlayer } from '../../utils/queryOldPlayer'
 import type { Request } from '../../types/express'
 import { query } from '../../utils/db'
 import dayjs from 'dayjs'

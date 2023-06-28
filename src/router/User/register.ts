@@ -3,6 +3,7 @@ import { query } from '../../utils/db'
 import { Request, User } from '../../types/express'
 import { checkCode } from '../../data/codes'
 import { queryOldPlayer } from '../../utils/queryOldPlayer'
+import { whitelistAdd } from '../../mcsmApis/execute'
 
 const router = Router()
 
@@ -85,13 +86,20 @@ router.post('/transfer', async (req: Request, res) => {
       msg: player.msg
     })
   }
+  // 添加白名单
+  const add = await whitelistAdd(name)
+  if (!add) {
+    return res.send({
+      status: 500,
+      msg: '白名单添加失败'
+    })
+  }
   // 完善用户信息
   const set = await setUserinfo(qq, code, user)
   if (set.status != 200) {
     return res.send(set)
   }
   // 插入玩家信息
-  // todo: 添加白名单
   const [err] = await query`insert into players set ${{
     name,
     transfer_id: player.id,

@@ -29,8 +29,24 @@ export const queryOldPlayer = async (
       }
     }
   }
+  // 查找审核中的
+  {
+    const [err, result] = await query`
+      select * from audits where name=${name} and status=1
+    `
+    if (err) {
+      return {
+        usable: false
+      }
+    }
+    if (result.length >= 1) {
+      return {
+        usable: false,
+        msg: '改游戏id已申请白名单'
+      }
+    }
+  }
   // 是否已占用
-  // todo: 查找审核中的
   {
     const [err, result] = await query`select * from players where name=${name}`
     if (err) {
