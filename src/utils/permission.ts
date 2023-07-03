@@ -113,14 +113,14 @@ export const checkUserPermission = async (user: number, name: string) => {
       permission_group.name=${name}
   where users.id=${user}
   `
-  if (err || result[0].value == 0) {
+  if (err || result[0]?.value == 0) {
     logger.info(`[${user}] 鉴权 ${name} 拒绝`)
     return false
   }
   // 数据库没有约定权限
   const nameKey = name.split('.')
   // @ts-ignore
-  if (result[0].value == null && !defaultPermission[nameKey[0]][nameKey[1]]) {
+  if (result[0]?.value == null && !defaultPermission[nameKey[0]][nameKey[1]]) {
     logger.info(` [${user}] 鉴权  ${name} 匹配默认权限拒绝`)
     return false
   }
