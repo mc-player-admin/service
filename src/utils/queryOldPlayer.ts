@@ -97,7 +97,7 @@ export const queryOldPlayer = async (
         qq: string
       }[]
     >`
-    select * from old_players_2 where name=${name} and qq=${qq}
+    select * from old_players_1 where name=${name} and qq=${qq}
     `
     if (err) {
       return {
