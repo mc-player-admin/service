@@ -1,13 +1,12 @@
-name: Build
+name: Backend Deploy
 
 on:
-  workflow_run:
-    workflows: ['Frontend Build']
+  repository_dispatch:
     types:
-      - completed
+      - deploy-frontend
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,13 +18,16 @@ jobs:
         with:
           node-version: 16
 
+      - name: Download frontend build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: frontend-build
+
+      - name: Copy frontend build to backend public directory
+        run: cp -R dist/ mc-player-admin/service/public/
+
       - name: Install dependencies
         run: yarn install
 
-      - name: Copy frontend build output
-        run: |
-          mkdir -p public/
-          cp -R ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_commit.id == github.sha }}/dist public/
-
-      - name: Build project
-        run: yarn build
+      - name: Start backend server
+        run: yarn start
