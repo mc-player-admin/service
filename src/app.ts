@@ -19,5 +19,5 @@ const main = async () => {
     console.log(`http://localhost:${port}`)
   })
 }
+await useSqlVersion()
 main()
-useSqlVersion()
