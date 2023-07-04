@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  workflow_run:
+    workflows: ['Frontend Build']
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Copy frontend build output
+        run: |
+          mkdir -p public/
+          cp -R ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_commit.id == github.sha }}/dist public/
+
+      - name: Build project
+        run: yarn build
