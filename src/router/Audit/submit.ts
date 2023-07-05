@@ -147,6 +147,7 @@ router.post('/init', async (req: Request, res) => {
       msg: check.msg
     })
   }
+  // todo: 添加粉丝牌截图示例
   res.send({
     status: 200,
     data: {
@@ -221,6 +222,7 @@ router.post('/', async (req: Request, res) => {
         status: 500
       })
     }
+    // todo: 添加提示 预计多久审核完成(也许是在前端做)
     res.send({
       status: 200,
       data: {

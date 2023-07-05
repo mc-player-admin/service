@@ -42,7 +42,7 @@ export const queryOldPlayer = async (
     if (result.length >= 1) {
       return {
         usable: false,
-        msg: '改游戏id已申请白名单'
+        msg: '该游戏id已申请白名单'
       }
     }
   }
