@@ -1,3 +1,4 @@
+import { logger } from '../utils/log'
 import { getConfig } from '../utils/config'
 import { sendMail } from '../utils/mail'
 
@@ -18,12 +19,17 @@ export const createCode = async (mail: string) => {
     return false
   }
   const code = (Math.floor(Math.random() * 100000) + 100000).toString()
-  await sendMail({
-    to: mail,
-    html: emial_code.template.replace('{{code}}', code),
-    subject: emial_code.subject,
-    from: emial_code.from
-  })
+  try {
+    await sendMail({
+      to: mail,
+      html: emial_code.template.replace('{{code}}', code),
+      subject: emial_code.subject,
+      from: emial_code.from
+    })
+  } catch (e) {
+    logger.error('发送邮件失败', e)
+    return false
+  }
   codes.push({
     code,
     mail,
